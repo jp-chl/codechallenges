@@ -11,7 +11,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 /**
- * Is Subsequence
+ * IS SUBSEQUENCE
+ *
  * Given a string s and a string t, check if s is subsequence of t.
  *
  * A subsequence of a string is a new string which is formed from

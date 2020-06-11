@@ -1,6 +1,5 @@
 package com.jpvr.codechallenges.leetcode.challenge202006.week02;
 
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -37,17 +36,18 @@ import static org.hamcrest.Matchers.is;
 public class Day11 {
     static Stream<Arguments> testParameters () {
         return Stream.of(
+                Arguments.of(new int[] {0, 1, 0}, new int[] {0, 0, 1}),
                 Arguments.of(new int[] {1, 2, 0, 1, 1, 0}, new int[] {0, 0, 1, 1, 1, 2}),
                 Arguments.of(new int[] {0, 2, 2, 2, 2, 1, 1, 1}, new int[] {0, 1, 1, 1, 2, 2, 2, 2}),
                 Arguments.of(new int[] {2, 0, 2, 1, 1, 0}, new int[] {0, 0, 1, 1, 2, 2}),
                 Arguments.of(new int[] {2, 1, 0}, new int[] {0, 1, 2})
         ); } // end static Stream<Arguments> testParameters ()
 
-    @ParameterizedTest(name = "{index} => nums = {0}, expected = {1}")
+    @ParameterizedTest(name = "{index} => n = {0}, expected = {1}")
     @MethodSource("testParameters")
     public void should_sort_by_colors(int[] nums, int[] expectedOutput) {
         int[] copyNums = Arrays.copyOfRange(nums, 0, nums.length);
-        sortColors(copyNums);
+        sortColorsManualFill(copyNums);
         assertThat(copyNums, is(expectedOutput));
     } // end void should_sort_by_colors(int[] nums, int[] expectedOutput)
 
@@ -81,30 +81,62 @@ public class Day11 {
 
     /**
      * Runtime: 0 ms
-     * Memory Usage: 39.8 MB
+     * Memory Usage: 39.6 MB
      */
-    public void sortColorsDutchApproach(int[] nums) {
+    int i = 0;
+    public void sortColorsManualFill(int[] nums) {
+        int colorRedCount = 0; // 0's
+        int colorWhileCount = 0; // 1's
+        int colorBlueCount = 0; // 2's
 
+        for(int num : nums) {
+            switch (num) {
+                case 0:
+                    colorRedCount++;
+                    break;
+                case 1:
+                    colorWhileCount++;
+                    break;
+                case 2:
+                    colorBlueCount++;
+                    break;
+            } // end switch
+        } // end iteration
+
+        while(colorRedCount-- > 0) {
+            nums[i++] = 0;
+        } // end
+        while(colorWhileCount-- > 0) {
+            nums[i++] = 1;
+        } // end
+        while(colorBlueCount-- > 0) {
+            nums[i++] = 2;
+        } // end
+    } // end
+
+    /**
+     * Runtime: 0 ms
+     * Memory Usage: 39.2 MB
+     */
+    int tmp;
+    public void sortColorsDutchApproach(int[] nums) {
         int p0 = 0;
         int curr = 0;
         int p2 = nums.length - 1;
 
         while(curr <= p2) {
-            if ( nums[curr] == 0) {
-                swap(nums, p0, curr);
-                p0++;
-                curr++;
-            } else if ( nums[curr] == 2) {
-                swap(nums, p2, curr);
-                p2--;
+            if ( nums[curr] == 0 ) {
+                swap(nums, p0++, curr++);
+            } else if ( nums[curr] == 2 ) {
+                swap(nums, p2--, curr);
             } else {
                 curr++;
             }
         } // end iteration
-    } // end  void sortColorsDutchApproachTwo(int[] nums)
+    } // end  void sortColorsDutchApproach(int[] nums)
 
     private void swap(int[] arr, int i, int j) {
-        final int tmp = arr[j];
+        tmp = arr[j];
         arr[j] = arr[i];
         arr[i] = tmp;
     } // end void swap(int[] arr, int i, int j)

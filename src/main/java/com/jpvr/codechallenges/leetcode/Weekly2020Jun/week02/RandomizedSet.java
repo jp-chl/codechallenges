@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Runtime: 7 ms
+ * Memory Usage: 44.1 MB
+ */
 public class RandomizedSet {
 
     HashMap<Integer, Integer> map;

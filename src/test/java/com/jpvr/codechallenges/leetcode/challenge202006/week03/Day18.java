@@ -54,8 +54,19 @@ public class Day18 {
     @ParameterizedTest(name = "{index} => citations = {0}, expected = {1}")
     @MethodSource("testParameters")
     public void should_get_h_index(int[] citations, int expectedOutput) {
-        assertThat(hIndex(citations), is(expectedOutput));
+        assertThat(hIndexTwo(citations), is(expectedOutput));
     } // end void should_get_h_index(int[] citations, int expectedOutput)
+
+    private int hIndexTwo(int[] citations) {
+        return hashIndexHelper(citations, 0);
+    }
+
+    private int hashIndexHelper(int[] c, int ans) {
+        for(int sz = c.length, i = sz - 1; i>=0; i--) {
+            ans = Math.max(ans, Math.min(c[i], sz - i));
+        }
+        return ans;
+    } // end
 
     /**
      * Runtime: 0 ms

@@ -1,141 +1,109 @@
 package com.jpvr.codechallenges.leetcode.challenge202006.week04;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 /**
- * SUM ROOT TO LEAF NUMBERS
+ * PERFECT SQUARES
  *
- * Given a binary tree containing digits from 0-9 only, each root-to-leaf path could represent a number.
+ * Given a positive integer n,
+ * find the least number of perfect square numbers
+ * (for example, 1, 4, 9, 16, ...) which sum to n.
  *
- * An example is the root-to-leaf path 1->2->3 which represents the number 123.
+ * Example 1:
+ * - Input: n = 12
+ * - Output: 3
+ * Explanation: 12 = 4 + 4 + 4.
  *
- * Find the total sum of all root-to-leaf numbers.
- *
- * Note: A leaf is a node with no children.
- *
- * Example:
- *
- * Input: [1,2,3]
- *     1
- *    / \
- *   2   3
- * Output: 25
- * Explanation:
- * The root-to-leaf path 1->2 represents the number 12.
- * The root-to-leaf path 1->3 represents the number 13.
- * Therefore, sum = 12 + 13 = 25.
  * Example 2:
- *
- * Input: [4,9,0,5,1]
- *     4
- *    / \
- *   9   0
- *  / \
- * 5   1
- * Output: 1026
- * Explanation:
- * The root-to-leaf path 4->9->5 represents the number 495.
- * The root-to-leaf path 4->9->1 represents the number 491.
- * The root-to-leaf path 4->0 represents the number 40.
- * Therefore, sum = 495 + 491 + 40 = 1026.
+ * - Input: n = 13
+ * - Output: 2
+ * Explanation: 13 = 4 + 9.
  */
 public class Day27 {
 
-    TreeNode root;
+    static Stream<Arguments> testParameters () {
+        return Stream.of(
+                Arguments.of(12, 3),
+                Arguments.of(13, 2)
+        ); } // end static Stream<Arguments> testParameters ()
 
-    @Test
-    void should_sum_root_to_leaf_numbers() {
-        int expectedOutput = testCase1();
-        assertThat(sumNumbers(root), is(expectedOutput));
-
-        expectedOutput = testCase2();
-        assertThat(sumNumbers(root), is(expectedOutput));
-
-        expectedOutput = testCase3();
-        assertThat(sumNumbers(root), is(expectedOutput));
-
-        expectedOutput = testCase4();
-        assertThat(sumNumbers(root), is(expectedOutput));
-    } // end void should_sum_root_to_leaf_numbers()
-
-    private int testCase1() {
-        root = null;
-
-        root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-
-        return 25;
-    } // end int testCase1()
-    private int testCase2() {
-        root = null;
-
-        root = new TreeNode(4);
-        root.left = new TreeNode(9);
-        root.right = new TreeNode(0);
-        root.left.left = new TreeNode(5);
-        root.left.right = new TreeNode(1);
-
-        return 1026;
-    } // end int testCase2()
-    private int testCase3() {
-        root = null;
-
-        root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-        root.left.left = new TreeNode(4);
-        root.left.right = new TreeNode(5);
-
-        return 262;
-    } // end int testCase3()
-    private int testCase4() {
-        root = null;
-
-        root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-        root.left.left = new TreeNode(4);
-        root.left.right = new TreeNode(5);
-        root.right.left = new TreeNode(6);
-
-        return 385;
-    } // end int testCase4()
+    @ParameterizedTest(name = "{index} => n = {0}, expected = {1}")
+    @MethodSource("testParameters")
+    public void should_get_least_number_of_perfect_square_numbers(int n, int expectedOutput) {
+        assertThat(numSquaresBest(n), is(expectedOutput));
+    } // end void should_get_least_number_of_perfect_square_numbers(int n, int expectedOutput)
 
     /**
-     * Runtime: 0 ms
-     * Memory Usage: 37.1 MB
+     * Runtime: 2 ms
+     * Memory Usage: 38.6 MB
+     *
      */
-    private int sumNumbers(TreeNode root) {
-        if ( root == null ) {
-            return 0;
+    private int numSquaresBest(int n) {
+
+        if (isSquare(n)) {
+            return 1;
         }
 
-        return dfs(root, 0);
-    } // end int sumNumbers(TreeNode root)
+        int sqrt = (int) Math.sqrt(n);
 
-    private int dfs(TreeNode root, int val) {
-        if ( root == null ) {
-            return 0;
+        for (int i = 1; i <= sqrt; i ++) {
+            if ( isSquare(n - i * i) ) {
+                return 2;
+            }
         }
 
-        int result = 0;
+        while (n % 4 == 0) {
+            n >>= 2;
+        }
+        if (n % 8 == 7) {
+            return 4;
+        }
+        return 3;
+    } // end
 
-        val = val*10 + root.val;
+    private boolean isSquare(int n) {
+        final int sqrt = (int) Math.sqrt(n);
+        return sqrt * sqrt == n;
+    } // end boolean isSquare(int n)
 
-        if ( root.left == null  && root.right == null ) {
-            result += val;
-        } // end
+    /**
+     * Runtime: 46 ms
+     * Memory Usage: 39.8 MB
+     */
+    public int numSquares(int n) {
 
-        result += dfs(root.left, val);
-        result += dfs(root.right, val);
+        int[] dp = new int[n+1];
 
-        return result;
-    } // end int dfs(TreeNode root, int val)
-} // end class Day27
+        for(int i=1; i<=n; ++i) {
+            int min = i;
+            int y = 1;
+            int square = 1;
+            while( square <= i ) {
+                min = Math.min(min, 1 + dp[i - square]);
+                y++;
+                square = y*y;
+            } // end iteration
+            dp[i] = min;
+        } // end iteration
+
+        return dp[n];
+    } // end int numSquares(int n)
+} // end class Day28
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,5 @@
 package com.jpvr.codechallenges.leetcode.challenge202006.week04;
 
-import com.jpvr.codechallenges.leetcode.Weekly2020Jun.week04.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

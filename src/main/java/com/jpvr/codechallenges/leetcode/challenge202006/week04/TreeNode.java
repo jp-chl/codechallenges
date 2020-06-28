@@ -1,4 +1,4 @@
-package com.jpvr.codechallenges.leetcode.Weekly2020Jun.week04;
+package com.jpvr.codechallenges.leetcode.challenge202006.week04;
 
 /**
  * Definition for a binary tree node.
